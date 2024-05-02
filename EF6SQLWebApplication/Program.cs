@@ -1,5 +1,7 @@
 using EF6SQLWebApplication.Data;
+using EF6SQLWebApplication.Data.Repo;
 using EF6SQLWebApplication.Interfaces;
+using EF6SQLWebApplication.Intergaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddScoped<IRpgCharacterRepository, IRpgCharacterRepository>();
-//builder.Services.AddScoped<IRpgCharacterInventoryRepository, RpgCharacterInventoryRepository>();
+builder.Services.AddScoped<IRpgCharacterRepository, RpgCharacterRepository>();
+builder.Services.AddScoped<IRpgCharacterInventoryRepository, RpgCharacterInventoryRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddDbContext<DataContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

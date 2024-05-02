@@ -36,7 +36,7 @@ namespace EF6SQLWebApplication.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<RpgCharacterInventory>> GetItem(int id)
         {
-            var item = _uow.RpgCharacterInventoryRepository.GetItem(id);
+            var item = await _uow.RpgCharacterInventoryRepository.GetItem(id);
             if (item == null)
             {
                 return NotFound("Item not found");

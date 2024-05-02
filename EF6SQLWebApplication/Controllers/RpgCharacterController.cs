@@ -34,7 +34,7 @@ namespace EF6SQLWebApplication.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<RpgCharacter>> GetCharacter(int id)
         {
-            var character = _uow.RpgCharacterRepository.GetCharacter(id);
+            var character = await _uow.RpgCharacterRepository.GetCharacter(id);
             if (character == null)
             {
                 return NotFound("Character not found");
