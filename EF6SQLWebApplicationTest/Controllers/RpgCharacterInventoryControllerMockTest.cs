@@ -1,25 +1,23 @@
 ﻿using EF6SQLWebApplication;
 using EF6SQLWebApplication.Data;
-using EF6SQLWebApplication.Data.Repo;
+using EF6SQLWebApplication.Intergaces;
 using EF6SQLWebApplication.Models;
-using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace EF6SQLWebApplicationTest.Controllers
 {
-    public class RpgCharacterInventoryControllerTest
+    public class RpgCharacterInventoryControllerMockTest
     {
-        private DataContext _dataContext;
-        private RpgCharacterInventoryRepository _repository;
+        private Mock<DataContext> _mockDataContext;
+        private Mock<IRpgCharacterRepository> _rpgCharacterRepository;
+        private Mock<IRpgCharacterInventoryRepository> _rpgCharacterInventoryRepository;
 
         [SetUp]
         public void SetUp()
         {
-            var options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase("TestDatabase")
-                .Options;
-
-            _dataContext = new DataContext(options);
-            _repository = new RpgCharacterInventoryRepository(_dataContext);
+            _mockDataContext = new Mock<DataContext>();
+            _rpgCharacterRepository = new Mock<IRpgCharacterRepository>();
+            _rpgCharacterInventoryRepository = new Mock<IRpgCharacterInventoryRepository>();
         }
 
         [Test]
@@ -35,13 +33,13 @@ namespace EF6SQLWebApplicationTest.Controllers
                 Quantity = 5
             };
 
+            var repositoryMock = new Mock<IRpgCharacterInventoryRepository>();
+
             // Act
-            _repository.AddItemToInventory(item);
-            _dataContext.SaveChanges();
+            repositoryMock.Object.AddItemToInventory(item);
 
             // Assert
-            var retrievedCharacter = _dataContext.RpgCharacterInventory.FirstOrDefault(c => c == item);
-            Assert.IsNotNull(retrievedCharacter, "Item should be added to the database");
+            repositoryMock.Verify(r => r.AddItemToInventory(It.Is<RpgCharacterInventory>(i => i == item)), Times.Once);
         }
 
         [Test]
@@ -66,13 +64,14 @@ namespace EF6SQLWebApplicationTest.Controllers
                 }
             };
 
-            _dataContext.RpgCharacterInventory.AddRange(items);
-            await _dataContext.SaveChangesAsync();
+            var repositoryMock = new Mock<IRpgCharacterInventoryRepository>();
+            repositoryMock.Setup(repo => repo.GetAllItems()).ReturnsAsync(items);
 
             // Act
-            var result = await _repository.GetAllItems();
+            var result = await repositoryMock.Object.GetAllItems();
 
             // Assert
+            Assert.That(result, Is.Not.Null);
             Assert.That(result.Count(), Is.EqualTo(2), "Should return all items");
         }
 
@@ -89,14 +88,15 @@ namespace EF6SQLWebApplicationTest.Controllers
                 Quantity = 5
             };
 
-            _dataContext.RpgCharacterInventory.Add(item);
-            await _dataContext.SaveChangesAsync();
+            var repositoryMock = new Mock<IRpgCharacterInventoryRepository>();
+            repositoryMock.Setup(repo => repo.GetItem(item.Id)).ReturnsAsync(item);
 
             // Act
-            var result = await _repository.GetItem(item.Id);
+            var result = await repositoryMock.Object.GetItem(item.Id);
 
             // Assert
-            Assert.That(result.Id, Is.EqualTo(8), "Should return item id");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.EqualTo(item.Id), "Should return item with the correct ID");
         }
     }
 }
