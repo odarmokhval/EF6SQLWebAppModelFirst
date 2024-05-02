@@ -2,7 +2,7 @@
 
 namespace EF6SQLWebApplication.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IRpgCharacterRepository RpgCharacterRepository { get; }
         IRpgCharacterInventoryRepository RpgCharacterInventoryRepository { get; }
