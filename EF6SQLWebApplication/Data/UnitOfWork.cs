@@ -6,10 +6,10 @@ namespace EF6SQLWebApplication.Data
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DataContext _dataContext;
+        private readonly IDataContext _dataContext;
         private IRpgCharacterRepository _rpgCharacterRepository;
         private IRpgCharacterInventoryRepository _rpgCharacterInventoryRepository;
-        public UnitOfWork(DataContext dataContext,
+        public UnitOfWork(IDataContext dataContext,
                IRpgCharacterRepository rpgCharacterRepository,
                IRpgCharacterInventoryRepository rpgCharacterInventoryRepository)
         {
@@ -22,7 +22,7 @@ namespace EF6SQLWebApplication.Data
         {
             get
             {
-                return (RpgCharacterRepository)(_rpgCharacterRepository ??= new RpgCharacterRepository(_dataContext));
+                return _rpgCharacterRepository ??= new RpgCharacterRepository(_dataContext);
             }
         }
 
@@ -30,7 +30,7 @@ namespace EF6SQLWebApplication.Data
         {
             get
             {
-                return (RpgCharacterInventoryRepository)(_rpgCharacterInventoryRepository ??= new RpgCharacterInventoryRepository(_dataContext));
+                return _rpgCharacterInventoryRepository ??= new RpgCharacterInventoryRepository(_dataContext);
             }
         }
 

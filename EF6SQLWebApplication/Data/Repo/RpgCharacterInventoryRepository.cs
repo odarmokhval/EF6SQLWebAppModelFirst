@@ -1,4 +1,5 @@
-﻿using EF6SQLWebApplication.Intergaces;
+﻿using EF6SQLWebApplication.Interfaces;
+using EF6SQLWebApplication.Intergaces;
 using EF6SQLWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,8 +7,8 @@ namespace EF6SQLWebApplication.Data.Repo
 {
     public class RpgCharacterInventoryRepository : IRpgCharacterInventoryRepository
     {
-        private readonly DataContext _dataContext;
-        public RpgCharacterInventoryRepository(DataContext dataContext)
+        private readonly IDataContext _dataContext;
+        public RpgCharacterInventoryRepository(IDataContext dataContext)
         {
             _dataContext = dataContext;
         }

@@ -1,9 +1,10 @@
-﻿using EF6SQLWebApplication.Models;
+﻿using EF6SQLWebApplication.Interfaces;
+using EF6SQLWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EF6SQLWebApplication.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : DbContext, IDataContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { 
